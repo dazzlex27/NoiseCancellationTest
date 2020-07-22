@@ -1,0 +1,46 @@
+﻿<Window x:Class="NoiseCancellationTestApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:NoiseCancellationTestApp="clr-namespace:NoiseCancellationTestApp"
+		WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d"
+        Title="Noise cancellation test"
+		MinWidth="500"
+		MaxWidth="800"
+		SizeToContent="WidthAndHeight"
+		x:ClassModifier="internal">
+    <StackPanel Margin="10">
+		<StackPanel>
+			<TextBlock Text="Frequency, Hz" />
+			<TextBox Width="100"
+					 Text="440"
+					 Name="TbFr"
+					 HorizontalAlignment="Left"/>
+		</StackPanel>
+		<StackPanel>
+			<TextBlock Text="Length, ms"/>
+			<TextBox Width="100" 
+					 Text="500"
+					 Name="TbLg"
+					 HorizontalAlignment="Left"/>
+		</StackPanel>
+		<Button Content="Play tone" 
+				Margin="0,5"
+				Click="OnPlayToneClicked" />
+		<StackPanel>
+			<TextBlock Text="Filename"/>
+			<TextBox Width="100" 
+					 Text="test.mp3"
+					 Name="TbAudioFile"
+					 HorizontalAlignment="Left"/>
+		</StackPanel>
+		<Button Content="Play audio"
+				Click="OnPlaySoundClicked"
+				Margin="0,5"/>
+		<Button Content="Stop audio"
+				Click="OnStopSoundClicked" />
+		<NoiseCancellationTestApp:SpectrumVisualizer x:Name="SpetrumVis"/>
+	</StackPanel>
+
+</Window>
