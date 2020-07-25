@@ -12,6 +12,7 @@ namespace SoundLib
         public event Action<double[]> FftCalculated;
 
         public int FftSize => _fftSampleProvider.FftSize;
+
         public double MinAmplitudeDb => _fftSampleProvider.MinAmplitudeDb;
 
         public SoundProcessor(string fileName)

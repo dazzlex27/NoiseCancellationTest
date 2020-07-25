@@ -11,11 +11,11 @@ namespace SoundLib
         private readonly Complex[] fftBuffer;
         private readonly double[] _resultBuffer;
 
-        private int fftPos;
-        private readonly int m;
+        private int _fftBufferPosition;
+        private readonly int _mFactor;
         private readonly ISampleProvider _source;
 
-        private readonly int channels;
+        private readonly int _audioChannels;
 
         public WaveFormat WaveFormat => _source.WaveFormat;
 
@@ -25,13 +25,13 @@ namespace SoundLib
 
         public FftSampleProvider(ISampleProvider source, int fftSize = 1024, double minAmplitudeDb = -90)
         {
-            channels = source.WaveFormat.Channels;
+            _audioChannels = source.WaveFormat.Channels;
             if (!IsPowerOfTwo(fftSize))
                 throw new ArgumentException("FFT Length must be a power of two");
 
             FftSize = fftSize;
 
-            m = (int)Math.Log(FftSize, 2.0);
+            _mFactor = (int)Math.Log(FftSize, 2.0);
             fftBuffer = new Complex[FftSize];
             _resultBuffer = new double[FftSize];
             _source = source;
@@ -48,14 +48,14 @@ namespace SoundLib
             if (FftCalculated == null)
                 return;
 
-            fftBuffer[fftPos].X = (float)(value * FastFourierTransform.HammingWindow(fftPos, FftSize));
-            fftBuffer[fftPos].Y = 0;
-            fftPos++;
-            if (fftPos >= fftBuffer.Length)
+            fftBuffer[_fftBufferPosition].X = (float)(value * FastFourierTransform.HammingWindow(_fftBufferPosition, FftSize));
+            fftBuffer[_fftBufferPosition].Y = 0;
+            _fftBufferPosition++;
+            if (_fftBufferPosition >= fftBuffer.Length)
             {
-                fftPos = 0;
+                _fftBufferPosition = 0;
                 // 1024 = 2^10
-                FastFourierTransform.FFT(true, m, fftBuffer);
+                FastFourierTransform.FFT(true, _mFactor, fftBuffer);
                 ConvertComplexToAmplitude();
                 FftCalculated(_resultBuffer);
             }
@@ -70,22 +70,21 @@ namespace SoundLib
         public double GetAmplitude(Complex c)
         {
             const int amplitudeMultiplier = 20;
-            const int minDb = -90;
             // 20 from https://dspillustrations.com/pages/posts/misc/decibel-conversion-factor-10-or-factor-20.html
             double amplitudeDb = amplitudeMultiplier * Math.Log10(Math.Sqrt(c.X * c.X + c.Y * c.Y));
-            if (amplitudeDb < minDb)
-                amplitudeDb = minDb;
+            if (amplitudeDb < MinAmplitudeDb)
+                amplitudeDb = MinAmplitudeDb;
 
             return amplitudeDb;
         }
 
         public int Read(float[] buffer, int offset, int count)
-        {
+        { 
             var samplesRead = _source.Read(buffer, offset, count);
 
-            for (int n = 0; n < samplesRead; n += channels)
-                Add(buffer[n + offset]);
-            
+            for (int i = 0; i < samplesRead; i += _audioChannels)
+                Add(buffer[i + offset]);
+
             return samplesRead;
         }
     }

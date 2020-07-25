@@ -56,9 +56,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BaseViewModel.cs" />
+    <Compile Include="CommandHandler.cs" />
+    <Compile Include="MainWindowVm.cs" />
     <Compile Include="SpectrumVisualizer.xaml.cs">
       <DependentUpon>SpectrumVisualizer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SpectrumVisualizerVm.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

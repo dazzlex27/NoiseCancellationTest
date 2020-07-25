@@ -2,7 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:NoiseCancellationTestApp="clr-namespace:NoiseCancellationTestApp"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="clr-namespace:NoiseCancellationTestApp"
 		WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="Noise cancellation test"
@@ -10,37 +11,37 @@
 		MaxWidth="800"
 		SizeToContent="WidthAndHeight"
 		x:ClassModifier="internal">
-    <StackPanel Margin="10">
+	<Window.DataContext>
+		<local:MainWindowVm/>
+	</Window.DataContext>
+	<StackPanel Margin="10">
 		<StackPanel>
 			<TextBlock Text="Frequency, Hz" />
 			<TextBox Width="100"
-					 Text="440"
-					 Name="TbFr"
+					 Text="{Binding ToneFrequency, Mode=TwoWay}"
 					 HorizontalAlignment="Left"/>
 		</StackPanel>
 		<StackPanel>
 			<TextBlock Text="Length, ms"/>
 			<TextBox Width="100" 
-					 Text="500"
-					 Name="TbLg"
+					 Text="{Binding ToneLength, Mode=TwoWay}"
 					 HorizontalAlignment="Left"/>
 		</StackPanel>
 		<Button Content="Play tone" 
 				Margin="0,5"
-				Click="OnPlayToneClicked" />
+				Command="{Binding PlayToneCommand}" />
 		<StackPanel>
 			<TextBlock Text="Filename"/>
 			<TextBox Width="100" 
-					 Text="test.mp3"
+					 Text="{Binding SoundFilePath, Mode=TwoWay}"
 					 Name="TbAudioFile"
 					 HorizontalAlignment="Left"/>
 		</StackPanel>
-		<Button Content="Play audio"
-				Click="OnPlaySoundClicked"
+		<Button Content="Play sound"
+				Command="{Binding PlaySoundCommand}"
 				Margin="0,5"/>
-		<Button Content="Stop audio"
-				Click="OnStopSoundClicked" />
-		<NoiseCancellationTestApp:SpectrumVisualizer x:Name="SpetrumVis"/>
+		<Button Content="Stop sound"
+				Command="{Binding StopSoundCommand}" />
+		<local:SpectrumVisualizer DataContext="{Binding SpectrumVisVm}"/>
 	</StackPanel>
-
 </Window>
